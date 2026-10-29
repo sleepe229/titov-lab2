@@ -100,3 +100,22 @@ def test_delete_user():
 
 def test_delete_missing_user_404():
     assert client.delete("/users/42").status_code == 404
+
+
+def test_list_users_search_by_name_and_email():
+    create(ALICE)
+    create(BOB)
+    create({"name": "Carol", "email": "carol@test.org"})
+    assert [u["name"] for u in client.get("/users?search=ali").json()] == ["Alice"]
+    assert [u["name"] for u in client.get("/users?search=EXAMPLE").json()] == ["Alice", "Bob"]
+
+
+def test_list_users_pagination():
+    for i in range(5):
+        create({"name": f"U{i}", "email": f"u{i}@example.com"})
+    page = client.get("/users?limit=2&offset=2").json()
+    assert [u["name"] for u in page] == ["U2", "U3"]
+
+
+def test_list_users_invalid_limit():
+    assert client.get("/users?limit=0").status_code == 422

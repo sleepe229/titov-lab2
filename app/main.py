@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import FastAPI, HTTPException, Response, status
+from fastapi import FastAPI, HTTPException, Query, Response, status
 
 from app import __version__
 from app.schemas import User, UserCreate, UserUpdate
@@ -36,9 +36,13 @@ def create_user(data: UserCreate) -> User:
 
 
 @app.get("/users", response_model=list[User])
-def list_users() -> list[User]:
-    """Получить список всех пользователей."""
-    return storage.list()
+def list_users(
+    search: str | None = Query(default=None, description="Поиск по имени или email"),
+    limit: int | None = Query(default=None, ge=1, le=100, description="Размер страницы"),
+    offset: int = Query(default=0, ge=0, description="Смещение от начала списка"),
+) -> list[User]:
+    """Получить список пользователей с поиском и пагинацией."""
+    return storage.list(search=search, limit=limit, offset=offset)
 
 
 @app.get("/users/{user_id}", response_model=User)
