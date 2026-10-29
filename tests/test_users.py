@@ -124,7 +124,7 @@ def test_list_users_invalid_limit():
 def test_health_reports_version():
     from app import __version__
 
-    assert client.get("/health").json()["version"] == __version__ == "1.0.0"
+    assert client.get("/health").json()["version"] == __version__ == "1.0.1"
 
 
 def test_count_users():
