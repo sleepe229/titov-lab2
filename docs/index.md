@@ -19,6 +19,7 @@ uvicorn app.main:app --reload
 | GET    | `/health`         | Проверка работоспособности       |
 | POST   | `/users`          | Создать пользователя             |
 | GET    | `/users`          | Список (`search`, `limit`, `offset`) |
+| GET    | `/users/count`    | Количество пользователей         |
 | GET    | `/users/{id}`     | Получить пользователя            |
 | PATCH  | `/users/{id}`     | Частично обновить пользователя   |
 | DELETE | `/users/{id}`     | Удалить пользователя             |
