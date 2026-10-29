@@ -1,0 +1,19 @@
+site_name: User Management API
+site_description: REST API для управления пользователями (ЛР2, CI/CD)
+docs_dir: docs
+theme:
+  name: material
+  language: ru
+nav:
+  - Главная: index.md
+  - API Reference: api.md
+  - История изменений: changelog.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.]
+          options:
+            show_source: true
+            docstring_style: google

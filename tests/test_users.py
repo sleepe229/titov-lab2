@@ -119,3 +119,16 @@ def test_list_users_pagination():
 
 def test_list_users_invalid_limit():
     assert client.get("/users?limit=0").status_code == 422
+
+
+def test_health_reports_version():
+    from app import __version__
+
+    assert client.get("/health").json()["version"] == __version__ == "1.0.1"
+
+
+def test_count_users():
+    create(ALICE)
+    create(BOB)
+    assert client.get("/users/count").json() == {"count": 2}
+    assert client.get("/users/count?search=bob").json() == {"count": 1}

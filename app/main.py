@@ -45,6 +45,14 @@ def list_users(
     return storage.list(search=search, limit=limit, offset=offset)
 
 
+@app.get("/users/count")
+def count_users(
+    search: str | None = Query(default=None, description="Поиск по имени или email"),
+) -> dict[str, int]:
+    """Получить количество пользователей (с учётом поиска)."""
+    return {"count": len(storage.list(search=search))}
+
+
 @app.get("/users/{user_id}", response_model=User)
 def get_user(user_id: int) -> User:
     """Получить пользователя по идентификатору."""
