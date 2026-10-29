@@ -1,0 +1,41 @@
+name: Docs
+
+on:
+  push:
+    branches: [main, release]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt mkdocs-material "mkdocstrings[python]"
+
+      - name: Build documentation
+        run: mkdocs build --strict
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: site
+          path: site/
+
+      - name: Publish to gh-pages branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          mkdocs gh-deploy --force --message "docs: build from {sha}"
