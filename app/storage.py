@@ -52,9 +52,25 @@ class UserStorage:
         except KeyError:
             raise UserNotFoundError(user_id) from None
 
-    def list(self) -> list[User]:
-        """Вернуть всех пользователей, отсортированных по id."""
-        return sorted(self._users.values(), key=lambda u: u.id)
+    def list(
+        self,
+        search: str | None = None,
+        limit: int | None = None,
+        offset: int = 0,
+    ) -> list[User]:
+        """Вернуть пользователей, отсортированных по id.
+
+        Args:
+            search: подстрока для поиска по имени или email (без учёта регистра).
+            limit: максимальное количество записей в ответе.
+            offset: сколько записей пропустить с начала.
+        """
+        users = sorted(self._users.values(), key=lambda u: u.id)
+        if search:
+            needle = search.lower()
+            users = [u for u in users if needle in u.name.lower() or needle in u.email.lower()]
+        end = None if limit is None else offset + limit
+        return users[offset:end]
 
     def update(self, user_id: int, data: UserUpdate) -> User:
         """Частично обновить пользователя (только переданные поля)."""
